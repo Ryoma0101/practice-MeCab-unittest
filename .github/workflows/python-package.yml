@@ -1,0 +1,28 @@
+name: Python Mecab Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install MeCab and dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mecab libmecab-dev mecab-ipadic-utf8 mecab-ipadic-neologd
+        python -m pip install --upgrade pip
+        pip install mecab-python3
+
+    - name: Run tests
+      run: |
+        export MECABRC='/usr/local/etc/mecabrc'
+        python -m unittest discover tests
